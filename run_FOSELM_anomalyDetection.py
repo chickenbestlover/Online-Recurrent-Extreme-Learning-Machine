@@ -1,63 +1,18 @@
-# ----------------------------------------------------------------------
-# Numenta Platform for Intelligent Computing (NuPIC)
-# Copyright (C) 2013-2015, Numenta, Inc.  Unless you have an agreement
-# with Numenta, Inc., for a separate license for this software code, the
-# following terms and conditions apply:
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero Public License version 3 as
-# published by the Free Software Foundation.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-# See the GNU Affero Public License for more details.
-#
-# You should have received a copy of the GNU Affero Public License
-# along with this program.  If not, see http://www.gnu.org/licenses.
-#
-# http://numenta.org/licenses/
-# ----------------------------------------------------------------------
-
 import csv
 from optparse import OptionParser
-
 from matplotlib import pyplot as plt
-import numpy as np
 import datetime
 import scipy.special
-#from hpelm import ELM
-
-from swarm_runner import SwarmRunner
-from scipy import random
-
 import pandas as pd
 from errorMetrics import *
-
-from htmresearch.algorithms.FOS_ELM import FOSELM
-from htmresearch.algorithms.ReOS_ELM import REOSELM
+from algorithms.FOS_ELM import FOSELM
+import random
 #plt.ion()
 
 qfunc = lambda x: 0.5-0.5*scipy.special.erf(x/np.sqrt(2))
 
-def initializeFOSELMnet(nDimInput, nDimOutput, numNeurons=10, BN=False,forgettingFactor=0.999,ORTH=True):
-  # Build ELM network with nDim input units,
-  # numNeurons hidden units (LSTM cells) and nDimOutput cells
-
-  # net = ELM(nDimInput, nDimOutput)
-  # net.add_neurons(numNeurons, "sigm")
-
-  net = FOSELM(nDimInput, nDimOutput,
-            numHiddenNeurons=numNeurons, activationFunction='sig',BN=BN,forgettingFactor=forgettingFactor,ORTH=ORTH)
-
-  return net
-
-
-
 def readDataSet(dataSet,numAnomaly=1):
   filePath = 'data/'+dataSet+'.csv'
-  # df = pd.read_csv(filePath, header=0, skiprows=[1, 2], names=['time', 'data'])
-  # sequence = df['data']
   dt_mean = 0
   dt_std = 0
 
@@ -74,7 +29,6 @@ def readDataSet(dataSet,numAnomaly=1):
     df = pd.read_csv(filePath, header=0, skiprows=[1, 2], names=['time', 'data'])
     sequence = df['data']
     seq = pd.DataFrame(np.array(sequence), columns=['data'])
-
   elif dataSet == 'kohyoung':
     df = pd.read_csv(filePath, header=None)
     dt = []
@@ -167,17 +121,16 @@ def _getArgs():
   parser.add_option("-d",
                     "--dataSet",
                     type=str,
-                    default='kohyoung',
-                    #default = 'rec-center-hourly',
+                    default='nyc_taxi',
                     dest="dataSet",
-                    help="DataSet Name, choose from sine, SantaFe_A, MackeyGlass")
+                    help="DataSet Name, choose among nyc_taxi, kohyoung")
 
-  # parser.add_option("-n",
-  #                   "--predictionstep",
-  #                   type=int,
-  #             s      default=1,
-  #                   dest="predictionstep",
-  #                   help="number of steps ahead to be predicted")
+  parser.add_option("-n",
+                     "--predictionStep",
+                     type=int,
+                     default=5,
+                     dest="predictionStep",
+                     help="number of steps ahead to be predicted")
 
 
   (options, remainder) = parser.parse_args()
@@ -223,11 +176,9 @@ if __name__ == "__main__":
 
   (_options, _args) = _getArgs()
   dataSet = _options.dataSet
-
+  predictionStep = _options.predictionStep
 
   print "run ELM on ", dataSet
-  predictionStep = 1
-  print predictionStep
   useTimeOfDay = False
   useDayOfWeek = False
 
@@ -236,7 +187,7 @@ if __name__ == "__main__":
 
   # prepare dataset as pyBrain sequential dataset
   numAnomaly=11
-  sequence = readDataSet(dataSet,numAnomaly=numAnomaly)
+  sequence, __, __ = readDataSet(dataSet,numAnomaly=numAnomaly)
 
   # standardize data by subtracting mean and dividing by std
   if dataSet=='kohyoung':
@@ -260,13 +211,10 @@ if __name__ == "__main__":
   (X, T) = getTimeEmbeddedMatrix(sequence, numLags, predictionStep,
                                  useTimeOfDay, useDayOfWeek)
 
-  #random.seed(6)
-  net = initializeFOSELMnet(nDimInput=X.shape[1],
-                         nDimOutput=1, numNeurons=400,BN=True,forgettingFactor=0.9995,ORTH=False)
-
+  random.seed(6)
+  net = FOSELM(X.shape[1], 1,
+            numHiddenNeurons=23, activationFunction='sig',BN=True,forgettingFactor=0.915,ORTH=False)
   net.initializePhase(lamb = 0.00001)
-
-
 
   predictedInput = np.zeros((len(sequence),))
   targetInput = np.zeros((len(sequence),))
@@ -277,12 +225,6 @@ if __name__ == "__main__":
   Ascores =[]
   ASpoints = []
   ALpoints = []
-
-  #ELMAE=REOSELM(X.shape[1],X.shape[1],net.numHiddenNeurons,activationFunction='sig')
-  #ELMAE.initializePhase(X[:nTrain,:],X[:nTrain:], lamb=0.0001)
-  #net.inputWeights = ELMAE.beta
-  #net.bias.fill(0)
-
 
   for i in xrange(nTrain, len(sequence)-predictionStep-1):
     net.train(X[[i], :], T[[i], :],RLS=True)
@@ -298,14 +240,10 @@ if __name__ == "__main__":
     if anomalyScore[i+1]>0.7:
       #print "Anomaly!!!!!!!!!!"
       ASpoints.append(i)
-    #meanLongA = np.mean(Ascores[len(Ascores)-1000:len(Ascores)])
     meanLongA = np.mean(anomalyScore[i+1-500:i+1])
-    #stdLongA = np.std(Ascores[len(Ascores)-1000:len(Ascores)])
     stdLongA = np.std(anomalyScore[i+1-500:i+1])
-    #meanShortA = np.mean(Ascores[len(Ascores)-10:len(Ascores)])
     meanShortA = np.mean(anomalyScore[i+1-10:i+1])
     anomalyLikelihood[i+1]= 1-qfunc((meanShortA-meanLongA)/(stdLongA+0.00001))
-    #if (targetInput[i+1]*stdSeq) + meanSeq>1:
     if (anomalyLikelihood[i+1]>0.9):
       print i, "th prediction : AL = ", round(anomalyLikelihood[i+1],4), "  \t AS= ", round(anomalyScore[i+1],4)\
       , "  \t Target= ", round(targetInput[i+1],4), "  \t Output= ", round(predictedInput[i+1],4)
@@ -324,24 +262,16 @@ if __name__ == "__main__":
 
   f, axarr = plt.subplots(2, sharex=True)
 
-  #sc = axarr[0].scatter(ALpoints,np.zeros(len(ALpoints)),label='anomalies', marker='o',color='black',s=200)
   targetPlot,=axarr[0].plot(targetInput,label='target',color='red',alpha=0.5)
   predictedPlot,=axarr[0].plot(predictedInput,label='predicted',color='blue',alpha=0.5)
   anomalyPoints,=axarr[0].plot([],label='anomalies',color='green')
   for i in ALpoints:
     sc = axarr[0].axvspan(i, i + 1, facecolor='yellow', edgecolor='yellow', label='anomalies')
 
-
-  #axarr[0].xlim([7000,12000])
-  #axarr[0].set_xlim([7000, 12000])
-
-  #plt.xlim([0, 4000])
   axarr[0].set_ylim([0,30])
   axarr[0].set_ylabel('')
   axarr[0].set_xlabel('')
   axarr[0].legend(handles=[targetPlot, predictedPlot,sc])
-  #plt.draw()
-  #plt.show()
 
   for i in ALpoints:
     sc = axarr[1].axvspan(i, i + 1, facecolor='yellow', alpha=0.5, edgecolor='yellow', label='anomalies')
@@ -352,7 +282,6 @@ if __name__ == "__main__":
   axarr[1].set_ylim([0.9, 1.1])
 
   axarr[1].legend(handles=[asPlot,sc])
-  #plt.show()
 
   plt.savefig('result/anomaly_'+str(numAnomaly)+'_plot.pdf')
   plt.show()

@@ -1,55 +1,15 @@
-# ----------------------------------------------------------------------
-# Numenta Platform for Intelligent Computing (NuPIC)
-# Copyright (C) 2013-2015, Numenta, Inc.  Unless you have an agreement
-# with Numenta, Inc., for a separate license for this software code, the
-# following terms and conditions apply:
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero Public License version 3 as
-# published by the Free Software Foundation.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-# See the GNU Affero Public License for more details.
-#
-# You should have received a copy of the GNU Affero Public License
-# along with this program.  If not, see http://www.gnu.org/licenses.
-#
-# http://numenta.org/licenses/
-# ----------------------------------------------------------------------
-
 import csv
 from optparse import OptionParser
 from matplotlib import pyplot as plt
-import numpy as np
-
-from hpelm import ELM
-from scipy import random
-
 import pandas as pd
 from errorMetrics import *
 
 from algorithms.FOS_ELM import FOSELM
 
-def initializeFOSELMnet(nDimInput, nDimOutput, numNeurons=10, BN=False,forgettingFactor=0.999,VFF_RLS=False,ADAPT=False):
-  # Build ELM network with nDim input units,
-  # numNeurons hidden units (LSTM cells) and nDimOutput cells
-
-  # net = ELM(nDimInput, nDimOutput)
-  # net.add_neurons(numNeurons, "sigm")
-
-  net = FOSELM(nDimInput, nDimOutput,
-            numHiddenNeurons=numNeurons, activationFunction='sig',BN=BN,forgettingFactor=forgettingFactor,VFF_RLS=VFF_RLS,ADAPT=ADAPT)
-
-  return net
-
 
 
 def readDataSet(dataSet):
   filePath = 'data/'+dataSet+'.csv'
-  # df = pd.read_csv(filePath, header=0, skiprows=[1, 2], names=['time', 'data'])
-  # sequence = df['data']
 
   if dataSet=='nyc_taxi':
     df = pd.read_csv(filePath, header=0, skiprows=[1,2],
@@ -114,16 +74,15 @@ def _getArgs():
                     "--dataSet",
                     type=str,
                     default='nyc_taxi',
-                    #default = 'rec-center-hourly',
                     dest="dataSet",
-                    help="DataSet Name, choose from sine, SantaFe_A, MackeyGlass")
+                    help="DataSet Name, choose from nyc_taxi")
 
-  # parser.add_option("-n",
-  #                   "--predictionstep",
-  #                   type=int,
-  #             s      default=1,
-  #                   dest="predictionstep",
-  #                   help="number of steps ahead to be predicted")
+  parser.add_option("-n",
+                    "--predictionStep",
+                    type=int,
+                    default=5,
+                    dest="predictionStep",
+                    help="number of steps ahead to be predicted")
 
 
   (options, remainder) = parser.parse_args()
@@ -165,17 +124,17 @@ if __name__ == "__main__":
 
   (_options, _args) = _getArgs()
   dataSet = _options.dataSet
-
+  predictionStep = _options.predictionStep
 
   print "run ELM on ", dataSet
 
-  predictionStep = 5
-  useTimeOfDay = True
-  useDayOfWeek = True
+  #predictionStep = 5
+  useTimeOfDay = False
+  useDayOfWeek = False
   nTrain = 500
   numLags = 100
 
-  # prepare dataset as pyBrain sequential dataset
+  # prepare dataset
   sequence = readDataSet(dataSet)
 
   # standardize data by subtracting mean and dividing by std
@@ -195,9 +154,9 @@ if __name__ == "__main__":
                                  useTimeOfDay, useDayOfWeek)
 
   #random.seed(7)
-  net = initializeFOSELMnet(nDimInput=X.shape[1],
-                         nDimOutput=1, numNeurons=25,BN=True,forgettingFactor=0.915,VFF_RLS=False,ADAPT=False)
 
+  net = FOSELM(X.shape[1], 1,
+            numHiddenNeurons=23, activationFunction='sig',BN=True,forgettingFactor=0.915,VFF_RLS=False,ADAPT=False)
   net.initializePhase(lamb = 0.0001)
 
 
@@ -206,10 +165,7 @@ if __name__ == "__main__":
   targetInput = np.zeros((len(sequence),))
   trueData = np.zeros((len(sequence),))
 
-  #ELMAE=REOSELM(X.shape[1],X.shape[1],net.numHiddenNeurons,activationFunction='sig')
-  #ELMAE.initializePhase(X[:nTrain,:],X[:nTrain:], lamb=0.0001)
-  #net.inputWeights = ELMAE.beta
-  #net.bias.fill(0)
+
 
   for i in xrange(nTrain, len(sequence)-predictionStep-1):
     net.train(X[[i], :], T[[i], :],RLS=False,RESETTING=False)

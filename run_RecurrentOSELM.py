@@ -32,24 +32,6 @@ from errorMetrics import *
 from algorithms.RecurrentOS_ELM import RecurrentOSELM
 #plt.ion()
 
-def initializeRecurrentOSELMnet(nDimInput, nDimOutput, numNeurons=100,BN=True,InWeightFF=0.999,OutWeightFF=0.999,HiddenWeightFF=0.999):
-  # Build ELM network with nDim input units,
-  # numNeurons hidden units (LSTM cells) and nDimOutput cells
-
-  # net = ELM(nDimInput, nDimOutput)
-  # net.add_neurons(numNeurons, "sigm")
-
-  net = RecurrentOSELM(nDimInput, nDimOutput,
-                       numHiddenNeurons=numNeurons,
-                       activationFunction='sig',
-                       BN=BN,
-                       inputWeightForgettingFactor=InWeightFF,
-                       outputWeightForgettingFactor=OutWeightFF,
-                       hiddenWeightForgettingFactor=HiddenWeightFF)
-
-  return net
-
-
 
 def readDataSet(dataSet):
   filePath = 'data/'+dataSet+'.csv'
@@ -201,13 +183,14 @@ if __name__ == "__main__":
 
   random.seed(6)
 
-  net = initializeRecurrentOSELMnet(nDimInput=X.shape[1],
-                                    nDimOutput=1,
-                                    numNeurons=23,
-                                    BN=True,
-                                    InWeightFF=0.999,
-                                    OutWeightFF=0.915,
-                                    HiddenWeightFF=0.999)
+  net = RecurrentOSELM(X.shape[1], 1,
+                       numHiddenNeurons=23,
+                       activationFunction='sig',
+                       BN=True,
+                       inputWeightForgettingFactor=0.999,
+                       outputWeightForgettingFactor=0.915,
+                       hiddenWeightForgettingFactor=0.999)
+
 
 
   net.initializePhase(lamb = 0.0001)

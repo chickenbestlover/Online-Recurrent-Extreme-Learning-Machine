@@ -105,7 +105,7 @@ if __name__ == "__main__":
   plt.figure(figsize=(8,4))
   dataSet = 'nyc_taxi'
 
-  forget = 0.9
+  forget = 0.99
 
   nrseOSELM=[]
   mapeOSELM=[]

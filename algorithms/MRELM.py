@@ -75,7 +75,7 @@ def sigmoidActFunc(V):
   return H
 
 
-class RecurrentOSELM(object):
+class MRELM(object):
   def __init__(self, inputs, outputs, numHiddenNeurons, activationFunction,BN=True,AE=True,ORTH=False,
                inputWeightForgettingFactor=0.999,
                outputWeightForgettingFactor=0.999,
@@ -186,7 +186,6 @@ class RecurrentOSELM(object):
 
     if self.activationFunction is "sig":
       self.bias = np.random.random((1, self.numHiddenNeurons)) * 2 - 1
-      #self.bias = np.zeros((1,self.numHiddenNeurons))
     else:
       print " Unknown activation function type"
       raise NotImplementedError
@@ -262,8 +261,8 @@ class RecurrentOSELM(object):
           pinv(np.eye(numSamples) + np.dot(H, np.dot(scale*self.M, Ht))),
           np.dot(H, scale*self.M))))
 
-      #self.beta = (self.forgettingFactor)*self.beta + np.dot(self.M, np.dot(Ht, targets - np.dot(H, (self.forgettingFactor)*self.beta)))
-      self.beta = self.beta + np.dot(self.M, np.dot(Ht, targets - np.dot(H, self.beta)))
+      self.beta = (self.forgettingFactor)*self.beta + np.dot(self.M, np.dot(Ht, targets - np.dot(H, (self.forgettingFactor)*self.beta)))
+      #self.beta = self.beta + np.dot(self.M, np.dot(Ht, targets - np.dot(H, self.beta)))
 
 
   def predict(self, features):

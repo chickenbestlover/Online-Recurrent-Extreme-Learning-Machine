@@ -184,17 +184,17 @@ if __name__ == "__main__":
   random.seed(6)
 
   net = RecurrentOSELM(X.shape[1], 1,
-                       numHiddenNeurons=23,
+                       numHiddenNeurons=10,
                        activationFunction='sig',
                        BN=True,
-                       inputWeightForgettingFactor=0.999,
-                       outputWeightForgettingFactor=0.915,
-                       hiddenWeightForgettingFactor=0.999)
+                       inputWeightForgettingFactor=0.9995,
+                       outputWeightForgettingFactor=0.90,
+                       hiddenWeightForgettingFactor=0.9995)
 
 
 
   net.initializePhase(lamb = 0.0001)
-
+  forgettingFactor=net.forgettingFactor
   predictedInput = np.zeros((len(sequence),))
   targetInput = np.zeros((len(sequence),))
   trueData = np.zeros((len(sequence),))
@@ -204,20 +204,26 @@ if __name__ == "__main__":
   #net.inputWeights = ELMAE.beta
   #net.bias.fill(0)
   for i in xrange(nTrain, len(sequence)-predictionStep-1):
-    net.train(X[[i], :], T[[i], :],VFF_RLS=False)
+    #net.train(X[[i], :], T[[i], :]-T[[i-1], :],VFF_RLS=False)
+    net.train(X[[i], :], T[[i], :],VFF_RLS=True)
+
     Y = net.predict(X[[i+1], :])
 
-    predictedInput[i+1] = Y[-1]
+    #predictedInput[i+1] = Y[-1]+T[[i], :]
+    predictedInput[i + 1] = Y[-1]
+
     targetInput[i+1] = sequence['data'][i+1+predictionStep]
     trueData[i+1] = sequence['data'][i+1]
     print "Iteration {} target input {:2.2f} predicted Input {:2.2f} ".format(
       i, targetInput[i+1], predictedInput[i+1])
-
+    if predictedInput[i+1]>10000000:
+      print "prediction diverged, break"
+      break
   predictedInput = (predictedInput * stdSeq) + meanSeq
   targetInput = (targetInput * stdSeq) + meanSeq
   trueData = (trueData * stdSeq) + meanSeq
 
-  saveResultToFile(dataSet, predictedInput, 'Decay'+str(net.forgettingFactor)+'WAROSELM'+str(net.numHiddenNeurons))
+  saveResultToFile(dataSet, predictedInput, 'Forget'+str(forgettingFactor)+'VRELM'+str(net.numHiddenNeurons))
 
   plt.figure()
   targetPlot,=plt.plot(targetInput,label='target',color='red')

@@ -189,7 +189,7 @@ if __name__ == "__main__":
                        activationFunction='sig',
                        BN=True,
                        inputWeightForgettingFactor=0.9995,
-                       outputWeightForgettingFactor=0.95,
+                       outputWeightForgettingFactor=0.99,
                        hiddenWeightForgettingFactor=0.9995)
 
 

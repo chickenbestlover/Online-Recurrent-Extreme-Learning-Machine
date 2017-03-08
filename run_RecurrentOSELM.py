@@ -145,6 +145,7 @@ def saveResultToFile(dataSet, predictedInput, algorithmName):
   inputFile.close()
   outputFile.close()
 
+  return outputFileName
 
 
 if __name__ == "__main__":
@@ -184,11 +185,11 @@ if __name__ == "__main__":
   random.seed(6)
 
   net = RecurrentOSELM(X.shape[1], 1,
-                       numHiddenNeurons=10,
+                       numHiddenNeurons=400,
                        activationFunction='sig',
                        BN=True,
                        inputWeightForgettingFactor=0.9995,
-                       outputWeightForgettingFactor=0.90,
+                       outputWeightForgettingFactor=0.95,
                        hiddenWeightForgettingFactor=0.9995)
 
 
@@ -204,13 +205,13 @@ if __name__ == "__main__":
   #net.inputWeights = ELMAE.beta
   #net.bias.fill(0)
   for i in xrange(nTrain, len(sequence)-predictionStep-1):
-    #net.train(X[[i], :], T[[i], :]-T[[i-1], :],VFF_RLS=False)
-    net.train(X[[i], :], T[[i], :],VFF_RLS=True)
+    net.train(X[[i], :], T[[i], :]-T[[i-1], :],VFF_RLS=True)
+    #net.train(X[[i], :], T[[i], :],VFF_RLS=True)
 
     Y = net.predict(X[[i+1], :])
 
-    #predictedInput[i+1] = Y[-1]+T[[i], :]
-    predictedInput[i + 1] = Y[-1]
+    predictedInput[i+1] = Y[-1]+T[[i], :]
+    #predictedInput[i + 1] = Y[-1]
 
     targetInput[i+1] = sequence['data'][i+1+predictionStep]
     trueData[i+1] = sequence['data'][i+1]
@@ -223,7 +224,7 @@ if __name__ == "__main__":
   targetInput = (targetInput * stdSeq) + meanSeq
   trueData = (trueData * stdSeq) + meanSeq
 
-  saveResultToFile(dataSet, predictedInput, 'Forget'+str(forgettingFactor)+'VRELM'+str(net.numHiddenNeurons))
+  outputFileName=saveResultToFile(dataSet, predictedInput, 'Forget'+str(forgettingFactor)+'VRRELM'+str(net.numHiddenNeurons))
 
   plt.figure()
   targetPlot,=plt.plot(targetInput,label='target',color='red')
@@ -243,6 +244,8 @@ if __name__ == "__main__":
   squareDeviation = computeSquareDeviation(predictedInput, targetInput)
   squareDeviation[:skipTrain] = None
   nrmse = np.sqrt(np.nanmean(squareDeviation)) / np.nanstd(targetInput)
+
+  print outputFileName
   print "NRMSE {}".format(nrmse)
 
 

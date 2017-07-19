@@ -1,22 +1,18 @@
 # ----------------------------------------------------------------------
-# Numenta Platform for Intelligent Computing (NuPIC)
-# Copyright (C) 2013, Numenta, Inc.  Unless you have an agreement
-# with Numenta, Inc., for a separate license for this software code, the
-# following terms and conditions apply:
-#
+# Copyright (c) 2017, Jin-Man Park. All rights reserved.
+# Contributors: Jin-Man Park and Jong-hwan Kim
+# Affiliation: Robot Intelligence Technology Lab.(RITL), Korea Advanced Institute of Science and Technology (KAIST)
+# URL: http://rit.kaist.ac.kr
+# E-mail: jmpark@rit.kaist.ac.kr
+# Citation: Jin-Man Park, and Jong-Hwan Kim. "Online recurrent extreme learning machine and its application to
+# time-series prediction." Neural Networks (IJCNN), 2017 International Joint Conference on. IEEE, 2017.
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero Public License version 3 as
 # published by the Free Software Foundation.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-# See the GNU Affero Public License for more details.
-#
-# You should have received a copy of the GNU Affero Public License
-# along with this program.  If not, see http://www.gnu.org/licenses.
-#
-# http://numenta.org/licenses/
+# ----------------------------------------------------------------------
+# This code is originally from Numenta's Hierarchical Temporal Memory (HTM) code
+# (Numenta Platform for Intelligent Computing (NuPIC))
+# And modified to run Onine Recurrent Extreme Learning Machine (OR-ELM)
 # ----------------------------------------------------------------------
 
 import numpy as np

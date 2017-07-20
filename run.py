@@ -49,7 +49,7 @@ def _getArgs():
   parser.add_option("-a",
                     "--algorithm",
                     type=str,
-                    default='NAOSELM',
+                    default='ORELM',
                     help="Algorithm name, choose from FOSELM, NFOSELM, NAOSELM, ORELM")
   (options, remainder) = parser.parse_args()
   return options, remainder
@@ -203,7 +203,7 @@ if __name__ == "__main__":
 
   net = initializeNet(nDimInput=X.shape[1],
                       nDimOutput=1,
-                      numNeurons=1,
+                      numNeurons=23,
                       algorithm=algorithm,
                       LN=True,
                       InWeightFF=1,
@@ -238,7 +238,7 @@ if __name__ == "__main__":
 
   plt.figure(figsize=(20,7))
   targetPlot,=plt.plot(targetInput,label='target',color='red',marker='.',linestyle='-')
-  predictedPlot,=plt.plot(predictedInput,label='predicted',color='blue',marker='',linestyle='')
+  predictedPlot,=plt.plot(predictedInput,label='predicted',color='blue',marker='.',linestyle=':')
   plt.xlim([13000,13500])
   plt.ylim([0, 30000])
   plt.ylabel('value',fontsize=15)
@@ -247,8 +247,8 @@ if __name__ == "__main__":
   plt.legend(handles=[targetPlot, predictedPlot])
   plt.title('Time-series Prediction of '+algorithm+' on '+dataSet+' dataset',fontsize=25,fontweight=40)
   plt.draw()
+  plt.savefig('./fig/predictionPlot.png')
   plt.show()
-
   skipTrain = numLags
   from plot import computeSquareDeviation
   squareDeviation = computeSquareDeviation(predictedInput, targetInput)

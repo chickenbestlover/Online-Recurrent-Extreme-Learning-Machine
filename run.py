@@ -236,7 +236,7 @@ if __name__ == "__main__":
 
   saveResultToFile(dataSet, predictedInput, 'FF'+str(net.forgettingFactor)+algorithm+str(net.numHiddenNeurons),predictionStep)
 
-  plt.figure(figsize=(10,4))
+  plt.figure(figsize=(15,6))
   targetPlot,=plt.plot(targetInput,label='target',color='red',marker='.',linestyle='-')
   predictedPlot,=plt.plot(predictedInput,label='predicted',color='blue',marker='.',linestyle=':')
   plt.xlim([13000,13500])

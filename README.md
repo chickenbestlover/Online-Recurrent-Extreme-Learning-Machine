@@ -17,7 +17,7 @@ intervals).
 York City Transportation Authority](http://www.nyc.gov/html/tlc/html/about/trip_record_data.shtml )
   * preprocessed(aggregated at 30 min intervals) by Cui, Yuwei, et al. in ["A comparative study of HTM and other neural network models for online sequence learning with streaming data." Neural Networks (IJCNN), 2016 International Joint Conference on. IEEE, 2016.](http://ieeexplore.ieee.org/abstract/document/7727380/)
 
-![example](./fig/NYCexample.pdf)
+![example](./fig/NYCexample.png)
 
 If you use this code, please cite our paper "Online Recurrent Extreme Learning Machine and its Application to time-series Prediction" in IEEE Access.
 

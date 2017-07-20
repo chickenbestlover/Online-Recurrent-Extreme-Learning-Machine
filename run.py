@@ -236,7 +236,7 @@ if __name__ == "__main__":
 
   saveResultToFile(dataSet, predictedInput, 'FF'+str(net.forgettingFactor)+algorithm+str(net.numHiddenNeurons),predictionStep)
 
-  plt.figure(figsize=(20,7))
+  plt.figure(figsize=(10,4))
   targetPlot,=plt.plot(targetInput,label='target',color='red',marker='.',linestyle='-')
   predictedPlot,=plt.plot(predictedInput,label='predicted',color='blue',marker='.',linestyle=':')
   plt.xlim([13000,13500])
@@ -245,9 +245,9 @@ if __name__ == "__main__":
   plt.xlabel('time',fontsize=15)
   plt.grid()
   plt.legend(handles=[targetPlot, predictedPlot])
-  plt.title('Time-series Prediction of '+algorithm+' on '+dataSet+' dataset',fontsize=25,fontweight=40)
+  plt.title('Time-series Prediction of '+algorithm+' on '+dataSet+' dataset',fontsize=20,fontweight=40)
   plt.draw()
-  plt.savefig('./fig/predictionPlot.pdf')
+  plt.savefig('./fig/predictionPlot.png',bbox_inches='tight')
   plt.show()
   skipTrain = numLags
   from plot import computeSquareDeviation

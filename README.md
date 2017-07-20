@@ -37,7 +37,7 @@ York City Transportation Authority](http://www.nyc.gov/html/tlc/html/about/trip_
 \'python run.py -a ORELM\'
 
 ## Result
-![predictionPlot](./fig/predictionPlot-1.png)
+![predictionPlot](./fig/predictionPlot.png)
 
 ---------------------------------
 If you use this code, please cite our paper "Online Recurrent Extreme Learning Machine and its Application to time-series Prediction" in IEEE Access.

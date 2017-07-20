@@ -247,7 +247,7 @@ if __name__ == "__main__":
   plt.legend(handles=[targetPlot, predictedPlot])
   plt.title('Time-series Prediction of '+algorithm+' on '+dataSet+' dataset',fontsize=25,fontweight=40)
   plt.draw()
-  plt.savefig('./fig/predictionPlot.png')
+  plt.savefig('./fig/predictionPlot.pdf')
   plt.show()
   skipTrain = numLags
   from plot import computeSquareDeviation

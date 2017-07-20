@@ -12,7 +12,7 @@
 # ----------------------------------------------------------------------
 # This code is originally from Numenta's Hierarchical Temporal Memory (HTM) code
 # (Numenta Platform for Intelligent Computing (NuPIC))
-# And modified to run Onine Recurrent Extreme Learning Machine (OR-ELM)
+# And modified to run Online Recurrent Extreme Learning Machine (OR-ELM)
 # ----------------------------------------------------------------------
 
 import argparse

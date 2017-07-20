@@ -12,7 +12,7 @@
 # ----------------------------------------------------------------------
 # This code is originally from Numenta's Hierarchical Temporal Memory (HTM) code
 # (Numenta Platform for Intelligent Computing (NuPIC))
-# And modified to run Onine Recurrent Extreme Learning Machine (OR-ELM)
+# And modified to run Online Recurrent Extreme Learning Machine (OR-ELM)
 # ----------------------------------------------------------------------
 import numpy as np
 from numpy.linalg import pinv
@@ -33,7 +33,7 @@ def sigmoidActFunc(V):
   H = 1 / (1+np.exp(-V))
   return H
 
-class AOSELM(object):
+class NAOSELM(object):
   def __init__(self, inputs, outputs, numHiddenNeurons, activationFunction, LN=True,
                outputWeightForgettingFactor=0.999,
                inputWeightForgettingFactor=0.999, AE=True, ORTH=False):

@@ -248,7 +248,7 @@ if __name__ == "__main__":
   ax1.set_ylabel('NRMSE')
   ax1.set_xlim([inds[0]-width, inds[-1]+width*5.0])
   ax1.set_xticklabels( ('10','20','25','50','100','200','400','800','1600') )
-  ax1.set_xlabel('# of hidden neurons')
+  ax1.set_xlabel('# of hidden nodes')
   ax1.legend((rects1[0], rects2[0], rects3[0],rects4[0]), ('FOSELM', 'NFOSELM', 'NAOSELM','ORELM'))
   ax1.set_ylim([0,0.8])
   '''
@@ -265,13 +265,14 @@ if __name__ == "__main__":
   ax3.set_xlim([inds[0]-width, inds[-1]+width*5.0])
   ax3.set_ylabel('MAPE')
   ax3.set_xticklabels(('10','20','25','50','100','200','400','800','1600') )
-  ax3.set_xlabel('# of hidden neurons')
+  ax3.set_xlabel('# of hidden nodes')
   ax3.legend((rects11[0], rects12[0], rects13[0],rects14[0]), ('FOSELM', 'NFOSELM', 'NAOSELM','ORELM'))
   ax3.set_ylim([0, 0.3])
   '''
   for tick in ax3.xaxis.get_major_ticks():
     tick.label.set_rotation('vertical')
   '''
+  plt.title('                                      Forgetting Factor ='+str(forgettingFactor))
   plt.show()
   print 'mapeFOSELM ='
   print (mapeFOSELM)
@@ -282,7 +283,7 @@ if __name__ == "__main__":
   print 'mapeORELM ='
   print (mapeORELM)
 
-  plt.savefig(figPath + 'model_performance_summary_FF' + str(forgettingFactor) + 'FOSELMvsNFOSELMvsNAOSELMvsORELM.pdf')
+  plt.savefig(figPath + 'model_performance_summary_FF' + str(forgettingFactor) + 'FOSELMvsNFOSELMvsNAOSELMvsORELM.png')
 
 
   #plt.figure()

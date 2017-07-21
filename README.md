@@ -7,6 +7,7 @@ Online-Recurrent-Extreme-Learning-Machine (OR-ELM) for time-series prediction, i
 * Numpy
 * Matplotlib
 * pandas
+* Expsuite (included in this repository)
 
 ## Dataset
 * NYC taxi passenger count
@@ -34,9 +35,23 @@ York City Transportation Authority](http://www.nyc.gov/html/tlc/html/about/trip_
   * This is for training recurrent neural networks (RNNs)
 
 ## Example of usage
+* Run prediction code
+
     python run.py -a ORELM
+
+* Plot performance comparison
+
+    python plotResults.py
+
 ## Result
+* Prediction form OR-ELM
+
 ![predictionPlot](./fig/predictionPlot.png)
+
+* Performance comparison
+  * FOS-ELM and proposed variants including OR-ELM
+
+![performanceComparison](./fig/model_performance_summary_FF0.915.png)
 
 ---------------------------------
 If you use this code, please cite our paper "Online Recurrent Extreme Learning Machine and its Application to time-series Prediction" in IEEE Access.

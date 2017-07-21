@@ -179,7 +179,7 @@ def saveResultToFile(dataSet, predictedInput, algorithmName,predictionStep):
 
   inputFile.close()
   outputFile.close()
-
+  print 'Prediction result is saved to ' + outputFileName
 
 
 if __name__ == "__main__":
@@ -224,18 +224,34 @@ if __name__ == "__main__":
     predictedInput[i+1] = Y[-1]
     targetInput[i+1] = sequence['data'][i+1+predictionStep]
     trueData[i+1] = sequence['data'][i+1]
-    #print "Iteration {} target input {:8.4f}   |   predicted input {:8.4f} ".format(i, targetInput[i+1], predictedInput[i+1])
+    print "{:5}th timeStep -  target: {:8.4f}   |    prediction: {:8.4f} ".format(i, targetInput[i+1], predictedInput[i+1])
     if Y[-1] > 100000:
       print "Output has diverged, terminate the process"
       predictedInput[(i + 1):] = 100000
       break
 
+  '''
+  Calculate total Normalized Root Mean Square Error (NRMSE)
+  '''
+  # Reconstruct original value
   predictedInput = (predictedInput * stdSeq) + meanSeq
   targetInput = (targetInput * stdSeq) + meanSeq
   trueData = (trueData * stdSeq) + meanSeq
+  # Calculate NRMSE from stpTrain to the end
+  skipTrain = numLags
+  from plot import computeSquareDeviation
 
-  saveResultToFile(dataSet, predictedInput, 'FF'+str(net.forgettingFactor)+algorithm+str(net.numHiddenNeurons),predictionStep)
+  squareDeviation = computeSquareDeviation(predictedInput, targetInput)
+  squareDeviation[:skipTrain] = None
+  nrmse = np.sqrt(np.nanmean(squareDeviation)) / np.nanstd(targetInput)
+  print "NRMSE {}".format(nrmse)
+  # Save prediction result as csv file
+  saveResultToFile(dataSet, predictedInput, 'FF' + str(net.forgettingFactor) + algorithm + str(net.numHiddenNeurons),
+                     predictionStep)
 
+  '''
+  Plot predictions and target values
+  '''
   plt.figure(figsize=(15,6))
   targetPlot,=plt.plot(targetInput,label='target',color='red',marker='.',linestyle='-')
   predictedPlot,=plt.plot(predictedInput,label='predicted',color='blue',marker='.',linestyle=':')
@@ -243,18 +259,13 @@ if __name__ == "__main__":
   plt.ylim([0, 30000])
   plt.ylabel('value',fontsize=15)
   plt.xlabel('time',fontsize=15)
+  plt.ion()
   plt.grid()
   plt.legend(handles=[targetPlot, predictedPlot])
   plt.title('Time-series Prediction of '+algorithm+' on '+dataSet+' dataset',fontsize=20,fontweight=40)
+  plot_path = './fig/predictionPlot.png'
+  plt.savefig(plot_pathbbox_inches='tight')
   plt.draw()
-  plt.savefig('./fig/predictionPlot.png',bbox_inches='tight')
   plt.show()
-  skipTrain = numLags
-  from plot import computeSquareDeviation
-  squareDeviation = computeSquareDeviation(predictedInput, targetInput)
-  squareDeviation[:skipTrain] = None
-  nrmse = np.sqrt(np.nanmean(squareDeviation)) / np.nanstd(targetInput)
-  print "NRMSE {}".format(nrmse)
-
-
-  #raw_input()
+  plt.pause(0)
+  print 'Prediction plot is saved to'+plot_path

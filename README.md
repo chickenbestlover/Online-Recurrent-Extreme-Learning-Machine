@@ -44,7 +44,7 @@ York City Transportation Authority](http://www.nyc.gov/html/tlc/html/about/trip_
     python plotResults.py
 
 ## Result
-* Prediction form OR-ELM
+* Prediction from OR-ELM
 
 ![predictionPlot](./fig/predictionPlot.png)
 

@@ -35,11 +35,12 @@ York City Transportation Authority](http://www.nyc.gov/html/tlc/html/about/trip_
   * This is for training recurrent neural networks (RNNs)
 
 ## Example of usage
-* Run prediction code
+Run prediction code:
 
     python run.py -a ORELM
 
-* Plot performance comparison
+Plot performance comparison:
+
 
     python plotResults.py
 

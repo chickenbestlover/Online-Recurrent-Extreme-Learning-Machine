@@ -54,9 +54,20 @@ Plot performance comparison:
 
 ![performanceComparison](./fig/model_performance_summary_FF0.915.png)
 
+## To do
+* Rewrite this code with Pytorch for GPU acceleration
+
+
+
 ---------------------------------
 If you use this code, please cite our paper "Online Recurrent Extreme Learning Machine and its Application to time-series Prediction" in IEEE Access.
 
 Paper URL: http://ieeexplore.ieee.org/abstract/document/7966094/
 
 Park, Jin-Man, and Jong-Hwan Kim. "Online recurrent extreme learning machine and its application to time-series prediction." Neural Networks (IJCNN), 2017 International Joint Conference on. IEEE, 2017.
+
+## Acknowledgement
+This work was supported by the ICT R&D program
+of MSIP/IITP. [2016-0-00563, Research on Adaptive Machine
+Learning Technology Development for Intelligent Autonomous
+Digital Companion]

@@ -62,7 +62,7 @@ Plot performance comparison:
 ---------------------------------
 If you use this code, please cite our paper "Online Recurrent Extreme Learning Machine and its Application to time-series Prediction" in IEEE Access.
 
-Paper URL: http://ieeexplore.ieee.org/abstract/document/7966094/
+Paper URL: http://ieeexplore.ieee.org/abstract/document/7966094/ http://rit.kaist.ac.kr/home/International_Conference?action=AttachFile&do=get&target=paper_0411.pdf
 
 Park, Jin-Man, and Jong-Hwan Kim. "Online recurrent extreme learning machine and its application to time-series prediction." Neural Networks (IJCNN), 2017 International Joint Conference on. IEEE, 2017.
 

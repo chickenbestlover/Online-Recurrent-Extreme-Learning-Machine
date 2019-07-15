@@ -31,9 +31,7 @@ def sigmoidActFunc(features, weights, bias):
   assert(features.shape[1] == weights.shape[1])
   (numSamples, numInputs) = features.shape
   (numHiddenNeuron, numInputs) = weights.shape
-  V = np.dot(features, np.transpose(weights))
-  for i in range(numHiddenNeuron):
-    V[:, i] += bias[0, i]
+  V = np.dot(features, np.transpose(weights)) + bias
   H = 1 / (1+np.exp(-V))
   return H
 
@@ -41,18 +39,13 @@ def sigmoidActFunc(features, weights, bias):
 def linear_recurrent(features, inputW,hiddenW,hiddenA, bias):
   (numSamples, numInputs) = features.shape
   (numHiddenNeuron, numInputs) = inputW.shape
-  V = np.dot(features, np.transpose(inputW)) + np.dot(hiddenA,hiddenW)
-  for i in range(numHiddenNeuron):
-    V[:, i] += bias[0, i]
-
+  V = np.dot(features, np.transpose(inputW)) + np.dot(hiddenA,hiddenW) + bias
   return V
 
 def sigmoidAct_forRecurrent(features,inputW,hiddenW,hiddenA,bias):
   (numSamples, numInputs) = features.shape
   (numHiddenNeuron, numInputs) = inputW.shape
-  V = np.dot(features, np.transpose(inputW)) + np.dot(hiddenA,hiddenW)
-  for i in range(numHiddenNeuron):
-    V[:, i] += bias[0, i]
+  V = np.dot(features, np.transpose(inputW)) + np.dot(hiddenA,hiddenW) + bias
   H = 1 / (1 + np.exp(-V))
   return H
 

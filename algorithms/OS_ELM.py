@@ -35,9 +35,7 @@ def sigmoidActFunc(features, weights, bias):
   assert(features.shape[1] == weights.shape[1])
   (numSamples, numInputs) = features.shape
   (numHiddenNeuron, numInputs) = weights.shape
-  V = np.dot(features, np.transpose(weights))
-  for i in range(numHiddenNeuron):
-    V[:, i] += bias[0, i]
+  V = np.dot(features, np.transpose(weights)) + bias
   H = 1 / (1+np.exp(-V))
   return H
 
